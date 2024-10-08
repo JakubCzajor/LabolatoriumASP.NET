@@ -21,6 +21,9 @@ public class HomeController : Controller
             return View("CustomError");
         }
         
+        ViewBag.Birth = birth;
+        ViewBag.Future = future;
+        
         var daysDiff = (future - birth).Days;
         ViewBag.Result = daysDiff / 365;
         
