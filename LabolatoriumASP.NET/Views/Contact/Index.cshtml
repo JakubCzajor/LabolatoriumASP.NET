@@ -1,0 +1,35 @@
+﻿@model System.Collections.Generic.Dictionary<int,LabolatoriumASP.NET.Models.ContactModel>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2 class="mb-4">Kontakty</h2>
+<a class="btn btn-primary" asp-action="Add" asp-controller="Contact">Dodaj kontakt</a>
+<h4 class="mt-3 mb-1">Lista kontatków</h4>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Akcje</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+            <tr>
+                <td>@entry.Value.FirstName</td>
+                <td>@entry.Value.LastName</td>
+                <td>
+                    <div>
+                        <a class="btn btn-primary">Edycja</a>
+                        <a class="btn btn-secondary">Szczegóły</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@entry.Value.Id">Usuń</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
