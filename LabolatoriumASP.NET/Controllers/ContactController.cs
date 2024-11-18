@@ -1,6 +1,7 @@
 ﻿using LabolatoriumASP.NET.Models;
 using LabolatoriumASP.NET.Models.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LabolatoriumASP.NET.Controllers;
 
@@ -23,7 +24,15 @@ public class ContactController : Controller
     [HttpGet]
     public IActionResult Add()
     {
-        return View();
+        var model = new ContactModel();
+        model.Organizations=_contactService.GetOrganizations().Select(o => new SelectListItem()
+        {
+            Value = o.Id.ToString(),
+            Text = o.Name,
+            Selected = o.Id == 1    
+        }).ToList();
+        
+        return View(model);
     }
 
     // Odebranie i zapisanie nowego kontaktu

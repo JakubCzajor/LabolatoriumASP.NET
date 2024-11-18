@@ -20,6 +20,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" asp-for="Email"></label>
+            
             <input class="form-control" type="email" asp-for="Email" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
@@ -37,6 +38,12 @@
             <label class="form-label" asp-for="Category"></label>
             <select class="form-control" asp-for="BirthDate" asp-items="@Html.GetEnumSelectList<Category>()"></select>
             <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" asp-for="OrganizationId"></label>
+            <select  asp-for="OrganizationId" asp-items="@Model.Organizations">
+            </select>
+            <span asp-validation-for="OrganizationId" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Dodaj</button>
     </form>
