@@ -1,5 +1,6 @@
 ﻿using LabolatoriumASP.NET.Models;
 using LabolatoriumASP.NET.Models.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -22,6 +23,7 @@ public class ContactController : Controller
 
     // Formularz dodania kontaktu
     [HttpGet]
+    [Authorize]
     public IActionResult Add()
     {
         var model = new ContactModel();

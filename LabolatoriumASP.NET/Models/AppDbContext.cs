@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace LabolatoriumASP.NET.Models;
 
-public class AppDbContext :DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     private string DbPath { get; set; }
     public DbSet<ContactEntity> Contacts { get; set; }
@@ -22,6 +24,77 @@ public class AppDbContext :DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
+        string USER_ID = Guid.NewGuid().ToString();
+        string ADMIN_ID = Guid.NewGuid().ToString();
+        string USER_ROLE_ID = Guid.NewGuid().ToString();
+        string ADMIN_ROLE_ID = Guid.NewGuid().ToString();
+
+        modelBuilder.Entity<IdentityRole>()
+            .HasData(
+                new IdentityRole()
+                {
+                    Id = USER_ROLE_ID,
+                    Name = "user",
+                    NormalizedName = "USER",
+                    ConcurrencyStamp = USER_ROLE_ID
+                },
+                new IdentityRole()
+                {
+                    Id = ADMIN_ROLE_ID,
+                    Name = "admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = ADMIN_ROLE_ID
+                }
+            );
+
+        var user = new IdentityUser()
+        {
+            Id = USER_ID,
+            Email = "adam@wsei.edu.pl",
+            NormalizedEmail = "ADAM@WSEI.EDU.PL",
+            UserName = "Adam",
+            NormalizedUserName = "ADAM",
+            EmailConfirmed = true
+        };
+        
+        var admin = new IdentityUser()
+        {
+            Id = ADMIN_ID,
+            Email = "admin@wsei.edu.pl",
+            NormalizedEmail = "ADMIN@WSEI.EDU.PL",
+            UserName = "admin",
+            NormalizedUserName = "ADMIN",
+            EmailConfirmed = true
+        };
+        
+        PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
+        user.PasswordHash = hasher.HashPassword(user, "1234!");
+        admin.PasswordHash = hasher.HashPassword(admin, "4321!");
+        
+        modelBuilder.Entity<IdentityUser>().HasData(user);
+        modelBuilder.Entity<IdentityUser>().HasData(admin);
+
+        modelBuilder.Entity<IdentityUserRole<string>>()
+            .HasData(
+                new IdentityUserRole<string>()
+                {
+                    RoleId = ADMIN_ROLE_ID,
+                    UserId = ADMIN_ID
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = USER_ROLE_ID,
+                    UserId = ADMIN_ID
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = USER_ROLE_ID,
+                    UserId = USER_ID
+                }
+            );
+        
         modelBuilder.Entity<OrganizationEntity>()
             .ToTable("organizations")
             .HasData(
