@@ -29,7 +29,8 @@ public class UniversityService : IUniversityService
             .Include(ury => ury.RankingCriteria)
             .ThenInclude(rc => rc.RankingSystem)
             .OrderByDescending(u => u.Year)
-            .ThenBy(u => u.University.UniversityName)
+            .ThenBy(u => u.RankingCriteria.RankingSystem.SystemName)
+            .ThenByDescending(u => u.Score)
             .ToListAsync();
     }
 

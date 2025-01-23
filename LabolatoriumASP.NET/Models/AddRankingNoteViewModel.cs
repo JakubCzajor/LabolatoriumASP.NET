@@ -8,7 +8,7 @@ public class AddRankingNoteViewModel
     public int UniversityId { get; set; }
 
     [Required]
-    [Range(2017, int.MaxValue, ErrorMessage = "Year must be above 2016.")]
+    [Range(2017, 9999, ErrorMessage = "Year must be above 2016.")]
     public int Year { get; set; }
 
     [Required(ErrorMessage = "Ranking system is required.")]

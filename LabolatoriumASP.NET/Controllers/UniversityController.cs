@@ -1,6 +1,7 @@
 ﻿using LabolatoriumASP.NET.Models;
 using LabolatoriumASP.NET.Services;
 using LabolatoriumASP.NET.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -90,6 +91,7 @@ public class UniversityController : Controller
         return View(viewModel);
     }
     
+    [Authorize]
     public async Task<IActionResult> CreateRankingNote(int universityId)
     {
         var rankingSystems = await _universityService.GetRankingSystems();
