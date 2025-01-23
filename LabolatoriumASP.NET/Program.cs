@@ -1,7 +1,26 @@
+using LabolatoriumASP.NET;
+using LabolatoriumASP.NET.Models;
+using LabolatoriumASP.NET.Services;
+using LabolatoriumASP.NET.Services.IService;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("UniversityDb")));
+
+builder.Services.AddDbContext<IdentityDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<IdentityDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IUniversityService, UniversityService>();
 
 var app = builder.Build();
 

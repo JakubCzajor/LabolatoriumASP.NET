@@ -1,0 +1,104 @@
+﻿@model AddRankingNoteViewModel
+
+@{
+ViewBag.Title = "Add New Ranking Note";
+Layout = "_Layout";
+}
+
+<h2>Add New Ranking Note</h2>
+
+<form id="rankingNoteForm" asp-action="CreateRankingNote" asp-controller="University" method="post">
+    <input type="hidden" asp-for="UniversityId" />
+
+    <div class="mb-3">
+        <label asp-for="Year" class="form-label">Year</label>
+        <input asp-for="Year" class="form-control" />
+        @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RankingSystemId" class="form-label">Ranking System</label>
+        <select asp-for="RankingSystemId" id="RankingSystemId" class="form-select">
+            <option value="">Select Ranking System</option>
+            @foreach (var rankingSystem in Model.RankingSystems)
+            {
+                if (rankingSystem.Id == Model.RankingSystemId)
+                {
+                    <option value="@rankingSystem.Id" selected>
+                        @rankingSystem.SystemName
+                    </option>
+                }
+                else
+                {
+                    <option value="@rankingSystem.Id">
+                        @rankingSystem.SystemName
+                    </option>
+                }
+            }
+        </select>
+        @Html.ValidationMessageFor(model => model.RankingSystemId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CriteriaId" class="form-label">Criteria</label>
+        <select asp-for="CriteriaId" id="CriteriaId" class="form-select">
+            <option value="">Select Criteria</option>
+        </select>
+        @Html.ValidationMessageFor(model => model.CriteriaId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Score" class="form-label">Score</label>
+        <input asp-for="Score" class="form-control" />
+        @Html.ValidationMessageFor(model => model.Score, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Ranking Note</button>
+</form>
+
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function loadCriteria(rankingSystemId, selectedCriteriaId) {
+            const criteriaDropdown = $('#CriteriaId');
+            criteriaDropdown.empty();
+
+            if (rankingSystemId) {
+                $.ajax({
+                    url: '@Url.Action("GetCriteria", "University")',
+                    type: 'GET',
+                    data: { rankingSystemId: rankingSystemId },
+                    dataType: 'json',
+                    success: function (criteria) {
+                        criteriaDropdown.append('<option value="">Select Criteria</option>');
+                        criteria.forEach(function (criterion) {
+                            criteriaDropdown.append(
+                                `<option value="${criterion.id}" ${
+                                    criterion.id == selectedCriteriaId ? "selected" : ""
+                                }>${criterion.criteriaName}</option>`
+                            );
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        alert('An error occurred while loading criteria: ' + error);
+                    }
+                });
+            } else {
+                criteriaDropdown.append('<option value="">Select Criteria</option>');
+            }
+        }
+
+        const currentRankingSystemId = $('#RankingSystemId').val();
+        const currentCriteriaId = '@Model.CriteriaId';
+        if (currentRankingSystemId) {
+            loadCriteria(currentRankingSystemId, currentCriteriaId);
+        }
+
+        $('#RankingSystemId').change(function () {
+            const rankingSystemId = $(this).val();
+            loadCriteria(rankingSystemId, null);
+        });
+    });
+</script>
+}

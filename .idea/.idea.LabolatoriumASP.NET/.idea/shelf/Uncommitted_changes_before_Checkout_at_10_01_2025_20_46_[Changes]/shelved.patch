@@ -1,0 +1,557 @@
+Index: LabolatoriumASP.NET/Controllers/HomeController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System.Diagnostics;\r\nusing Microsoft.AspNetCore.Mvc;\r\nusing LabolatoriumASP.NET.Models;\r\n\r\nnamespace LabolatoriumASP.NET.Controllers;\r\n\r\npublic class HomeController : Controller\r\n{\r\n    private readonly ILogger<HomeController> _logger;\r\n\r\n    public HomeController(ILogger<HomeController> logger)\r\n    {\r\n        _logger = logger;\r\n    }\r\n\r\n    public IActionResult Age(DateTime birth, DateTime future)\r\n    {\r\n        if (future < birth)\r\n        {\r\n            ViewBag.ErrorMessage = \"future nie może być wcześniej niż birth\";\r\n            return View(\"CustomError\");\r\n        }\r\n        \r\n        ViewBag.Birth = birth;\r\n        ViewBag.Future = future;\r\n        \r\n        var daysDiff = (future - birth).Days;\r\n        ViewBag.Result = daysDiff / 365;\r\n        \r\n        return View();\r\n    }\r\n    \r\n    public IActionResult Calculator(Operator? op, double? a, double? b)\r\n    {\r\n        // var op = Request.Query[\"op\"];\r\n        // var a = double.Parse(Request.Query[\"a\"]);\r\n        // var b = double.Parse(Request.Query[\"b\"]);\r\n\r\n        if (a is null || b is null)\r\n        {\r\n            ViewBag.ErrorMessage = \"Niepoprawny format liczby w parametrze a lub b\";\r\n            return View(\"CustomError\");\r\n        }\r\n\r\n        if (op is null)\r\n        {\r\n            ViewBag.ErrorMessage = \"Nieznany operator!\";\r\n            return View(\"CustomError\");\r\n        }\r\n        \r\n        ViewBag.A = a;\r\n        ViewBag.B = b;\r\n        \r\n        switch (op)\r\n        {\r\n            case Operator.Add:\r\n                ViewBag.Result = a + b;\r\n                ViewBag.Op = \"+\";\r\n                break;\r\n            case Operator.Sub:\r\n                ViewBag.Result = a - b;\r\n                ViewBag.Op = \"-\";\r\n                break;\r\n            case Operator.Mul:\r\n                ViewBag.Result = a * b;\r\n                ViewBag.Op = \"*\";\r\n                break;\r\n            case Operator.Div:\r\n                ViewBag.Result = a / b;\r\n                ViewBag.Op = \"/\";\r\n                break;\r\n        }\r\n        \r\n        return View();\r\n    }\r\n    \r\n    public IActionResult About()\r\n    {\r\n        return View();\r\n    }\r\n\r\n    public IActionResult Index()\r\n    {\r\n        return View();\r\n    }\r\n\r\n    public IActionResult Privacy()\r\n    {\r\n        return View();\r\n    }\r\n\r\n    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]\r\n    public IActionResult Error()\r\n    {\r\n        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });\r\n    }\r\n}\r\n\r\npublic enum Operator\r\n{\r\n    Add, Sub, Mul, Div\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Controllers/HomeController.cs b/LabolatoriumASP.NET/Controllers/HomeController.cs
+--- a/LabolatoriumASP.NET/Controllers/HomeController.cs	
++++ b/LabolatoriumASP.NET/Controllers/HomeController.cs	
+@@ -12,91 +12,15 @@
+     {
+         _logger = logger;
+     }
+-
+-    public IActionResult Age(DateTime birth, DateTime future)
+-    {
+-        if (future < birth)
+-        {
+-            ViewBag.ErrorMessage = "future nie może być wcześniej niż birth";
+-            return View("CustomError");
+-        }
+-        
+-        ViewBag.Birth = birth;
+-        ViewBag.Future = future;
+-        
+-        var daysDiff = (future - birth).Days;
+-        ViewBag.Result = daysDiff / 365;
+-        
+-        return View();
+-    }
+-    
+-    public IActionResult Calculator(Operator? op, double? a, double? b)
+-    {
+-        // var op = Request.Query["op"];
+-        // var a = double.Parse(Request.Query["a"]);
+-        // var b = double.Parse(Request.Query["b"]);
+-
+-        if (a is null || b is null)
+-        {
+-            ViewBag.ErrorMessage = "Niepoprawny format liczby w parametrze a lub b";
+-            return View("CustomError");
+-        }
+-
+-        if (op is null)
+-        {
+-            ViewBag.ErrorMessage = "Nieznany operator!";
+-            return View("CustomError");
+-        }
+-        
+-        ViewBag.A = a;
+-        ViewBag.B = b;
+-        
+-        switch (op)
+-        {
+-            case Operator.Add:
+-                ViewBag.Result = a + b;
+-                ViewBag.Op = "+";
+-                break;
+-            case Operator.Sub:
+-                ViewBag.Result = a - b;
+-                ViewBag.Op = "-";
+-                break;
+-            case Operator.Mul:
+-                ViewBag.Result = a * b;
+-                ViewBag.Op = "*";
+-                break;
+-            case Operator.Div:
+-                ViewBag.Result = a / b;
+-                ViewBag.Op = "/";
+-                break;
+-        }
+-        
+-        return View();
+-    }
+-    
+-    public IActionResult About()
+-    {
+-        return View();
+-    }
+-
++    
+     public IActionResult Index()
+     {
+         return View();
+     }
+ 
+-    public IActionResult Privacy()
+-    {
+-        return View();
+-    }
+-
+     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+     public IActionResult Error()
+     {
+         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+     }
+-}
+-
+-public enum Operator
+-{
+-    Add, Sub, Mul, Div
+ }
+\ No newline at end of file
+Index: LabolatoriumASP.NET/Views/Shared/_Layout.cshtml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\"/>\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\r\n    <title>@ViewData[\"Title\"] - LabolatoriumASP.NET</title>\r\n    <link rel=\"stylesheet\" href=\"~/lib/bootstrap/dist/css/bootstrap.min.css\"/>\r\n    <link rel=\"stylesheet\" href=\"~/css/site.css\" asp-append-version=\"true\"/>\r\n    <link rel=\"stylesheet\" href=\"~/LabolatoriumASP.NET.styles.css\" asp-append-version=\"true\"/>\r\n</head>\r\n<body>\r\n<header>\r\n    <nav class=\"navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3\">\r\n        <div class=\"container-fluid\">\r\n            <a class=\"navbar-brand\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">LabolatoriumASP.NET</a>\r\n            <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\".navbar-collapse\" aria-controls=\"navbarSupportedContent\"\r\n                    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n                <span class=\"navbar-toggler-icon\"></span>\r\n            </button>\r\n            <div class=\"navbar-collapse collapse d-sm-inline-flex justify-content-between\">\r\n                <ul class=\"navbar-nav flex-grow-1\">\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link text-dark\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">Home</a>\r\n                    </li>\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link text-dark\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Privacy\">Privacy</a>\r\n                    </li>\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link text-dark\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"About\">About</a>\r\n                    </li>\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link text-dark\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Calculator\">Calculator</a>\r\n                    </li>\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link text-dark\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Age\">Age</a>\r\n                    </li>\r\n                </ul>\r\n            </div>\r\n        </div>\r\n    </nav>\r\n</header>\r\n<div class=\"container\">\r\n    <main role=\"main\" class=\"pb-3\">\r\n        @RenderBody()\r\n    </main>\r\n</div>\r\n\r\n<footer class=\"border-top footer text-muted\">\r\n    <div class=\"container\">\r\n        &copy; 2024 - LabolatoriumASP.NET - <a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Privacy\">Privacy</a>\r\n    </div>\r\n</footer>\r\n<script src=\"~/lib/jquery/dist/jquery.min.js\"></script>\r\n<script src=\"~/lib/bootstrap/dist/js/bootstrap.bundle.min.js\"></script>\r\n<script src=\"~/js/site.js\" asp-append-version=\"true\"></script>\r\n@await RenderSectionAsync(\"Scripts\", required: false)\r\n</body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Views/Shared/_Layout.cshtml b/LabolatoriumASP.NET/Views/Shared/_Layout.cshtml
+--- a/LabolatoriumASP.NET/Views/Shared/_Layout.cshtml	
++++ b/LabolatoriumASP.NET/Views/Shared/_Layout.cshtml	
+@@ -5,14 +5,15 @@
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+     <title>@ViewData["Title"] - LabolatoriumASP.NET</title>
+     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
++    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+     <link rel="stylesheet" href="~/LabolatoriumASP.NET.styles.css" asp-append-version="true"/>
+ </head>
+ <body>
+ <header>
+-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
++    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
+         <div class="container-fluid">
+-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LabolatoriumASP.NET</a>
++            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">University Rankings</a>
+             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                     aria-expanded="false" aria-label="Toggle navigation">
+                 <span class="navbar-toggler-icon"></span>
+@@ -23,16 +24,7 @@
+                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                     </li>
+                     <li class="nav-item">
+-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+-                    </li>
+-                    <li class="nav-item">
+-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
+-                    </li>
+-                    <li class="nav-item">
+-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Calculator">Calculator</a>
+-                    </li>
+-                    <li class="nav-item">
+-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Age">Age</a>
++                        <a class="nav-link text-dark" asp-area="" asp-controller="University" asp-action="Index">Universities</a>
+                     </li>
+                 </ul>
+             </div>
+Index: LabolatoriumASP.NET/Views/Home/Privacy.cshtml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Views/Home/Privacy.cshtml b/LabolatoriumASP.NET/Views/Home/Privacy.cshtml
+deleted file mode 100644
+--- a/LabolatoriumASP.NET/Views/Home/Privacy.cshtml	
++++ /dev/null	
+@@ -1,6 +0,0 @@
+-@{
+-    ViewData["Title"] = "Privacy Policy";
+-}
+-<h1>@ViewData["Title"]</h1>
+-
+-<p>Use this page to detail your site's privacy policy.</p>
+\ No newline at end of file
+Index: LabolatoriumASP.NET/Views/University/Index.cshtml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Views/University/Index.cshtml b/LabolatoriumASP.NET/Views/University/Index.cshtml
+new file mode 100644
+--- /dev/null	
++++ b/LabolatoriumASP.NET/Views/University/Index.cshtml	
+@@ -0,0 +1,107 @@
++@model IEnumerable<LabolatoriumASP.NET.Models.University>
++
++@{
++    ViewBag.Title = "University List";
++    Layout = "_Layout";
++}
++
++<h2>University List</h2>
++
++<table class="table">
++    <thead>
++    <tr>
++        <th>
++            @Html.DisplayNameFor(u => u.UniversityName)
++        </th>
++        <th>
++            @Html.DisplayNameFor(u => u.Country!.CountryName)
++        </th>
++        <th>Action</th>
++    </tr>
++    </thead>
++    <tbody>
++    @foreach (var item in Model) {
++        <tr>
++            <td>
++                @Html.DisplayFor(modelItem => item.UniversityName)
++            </td>
++            <td>
++                @Html.DisplayFor(modelItem => item.Country!.CountryName)
++            </td>
++            <td>
++                <button type="button" class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">
++                    <i class="bi bi-pencil"></i> Edytuj
++                </button>
++                <button type="button" class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">
++                    <i class="bi bi-info-circle"></i> Szczegóły
++                </button>
++                <button type="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">
++                    <i class="bi bi-trash"></i> Usuń
++                </button>
++            </td>
++        </tr>
++    }
++    </tbody>
++</table>
++
++<div class="d-flex justify-content-between align-items-center mt-3">
++    <div aria-label="Page navigation">
++        <ul class="pagination">
++            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
++                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">
++                    <i class="bi bi-caret-left-fill"></i>
++                </a>
++            </li>
++
++            @if (ViewBag.TotalPages > 1)
++            {
++                int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
++                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
++
++                if (startPage > 1)
++                {
++                    <li class="page-item">
++                        <a class="page-link" asp-action="Index" asp-route-page="1">1</a>
++                    </li>
++                    @if (startPage > 2)
++                    {
++                        <li class="page-item disabled"><span class="page-link">...</span></li>
++                    }
++                }
++
++                for (int i = startPage; i <= endPage; i++)
++                {
++                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
++                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
++                    </li>
++                }
++
++                if (endPage < ViewBag.TotalPages)
++                {
++                    @if (endPage < ViewBag.TotalPages - 1)
++                    {
++                        <li class="page-item disabled"><span class="page-link">...</span></li>
++                    }
++                    <li class="page-item">
++                        <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.TotalPages)">@ViewBag.TotalPages</a>
++                    </li>
++                }
++            }
++
++            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
++                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">
++                    <i class="bi bi-caret-right-fill"></i>
++                </a>
++            </li>
++        </ul>
++    </div>
++    
++    <form method="get" class="d-flex align-items-center ms-3">
++        <input type="number" name="page" min="1" max="@ViewBag.TotalPages" class="form-control w-auto"
++               placeholder="Page" value="@ViewBag.CurrentPage" />
++        <button type="submit" class="btn btn-primary ms-2">
++            Go
++        </button>
++        <input type="hidden" name="size" value="@ViewBag.PageSize" />
++    </form>
++</div>
+Index: LabolatoriumASP.NET/Views/Shared/CustomError.cshtml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>@{\r\n    ViewBag.Title = \"CustomError\";\r\n    Layout = \"_Layout\";\r\n}\r\n\r\n<h2>Błąd kalkulatora</h2>\r\n<h4 class=\"alert-danger\">@ViewBag.ErrorMessage</h4>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Views/Shared/CustomError.cshtml b/LabolatoriumASP.NET/Views/Shared/CustomError.cshtml
+--- a/LabolatoriumASP.NET/Views/Shared/CustomError.cshtml	
++++ b/LabolatoriumASP.NET/Views/Shared/CustomError.cshtml	
+@@ -3,5 +3,5 @@
+     Layout = "_Layout";
+ }
+ 
+-<h2>Błąd kalkulatora</h2>
++<h2>Wystąpił błąd w aplikacji</h2>
+ <h4 class="alert-danger">@ViewBag.ErrorMessage</h4>
+\ No newline at end of file
+Index: LabolatoriumASP.NET/Program.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>var builder = WebApplication.CreateBuilder(args);\r\n\r\n// Add services to the container.\r\nbuilder.Services.AddControllersWithViews();\r\n\r\nvar app = builder.Build();\r\n\r\n// Configure the HTTP request pipeline.\r\nif (!app.Environment.IsDevelopment())\r\n{\r\n    app.UseExceptionHandler(\"/Home/Error\");\r\n    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.\r\n    app.UseHsts();\r\n}\r\n\r\napp.UseHttpsRedirection();\r\napp.UseStaticFiles();\r\n\r\napp.UseRouting();\r\n\r\napp.UseAuthorization();\r\n\r\napp.MapControllerRoute(\r\n    name: \"default\",\r\n    pattern: \"{controller=Home}/{action=Index}/{id?}\");\r\n\r\napp.Run();
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Program.cs b/LabolatoriumASP.NET/Program.cs
+--- a/LabolatoriumASP.NET/Program.cs	
++++ b/LabolatoriumASP.NET/Program.cs	
+@@ -1,8 +1,16 @@
++using LabolatoriumASP.NET;
++using LabolatoriumASP.NET.Services;
++using LabolatoriumASP.NET.Services.IService;
++
+ var builder = WebApplication.CreateBuilder(args);
+ 
+ // Add services to the container.
+ builder.Services.AddControllersWithViews();
+ 
++builder.Services.AddDbContext<AppDbContext>();
++
++builder.Services.AddScoped<IUniversityService, UniversityService>();
++
+ var app = builder.Build();
+ 
+ // Configure the HTTP request pipeline.
+Index: LabolatoriumASP.NET/Controllers/UniversityController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Controllers/UniversityController.cs b/LabolatoriumASP.NET/Controllers/UniversityController.cs
+new file mode 100644
+--- /dev/null	
++++ b/LabolatoriumASP.NET/Controllers/UniversityController.cs	
+@@ -0,0 +1,73 @@
++using LabolatoriumASP.NET.Models;
++using LabolatoriumASP.NET.Services.IService;
++using Microsoft.AspNetCore.Mvc;
++
++namespace LabolatoriumASP.NET.Controllers;
++
++public class UniversityController : Controller
++{
++    private readonly IUniversityService _universityService;
++    
++    public UniversityController(IUniversityService universityService)
++    {
++        _universityService = universityService;
++    }
++    
++    public async Task<IActionResult> Index(int page = 1, int size = 10)
++    {
++        var universities = await _universityService.GetAll();
++        var totalUniversities = universities.Count();
++        var paginatedUniversities = universities
++            .OrderBy(u => u.UniversityName)
++            .Skip((page - 1) * size)
++            .Take(size);
++        
++        ViewBag.CurrentPage = page;
++        ViewBag.TotalPages = (int)Math.Ceiling(totalUniversities / (double)size);
++        ViewBag.PageSize = size;
++
++        return View(paginatedUniversities);
++    }
++    
++    public async Task<IActionResult> Details(int id)
++    {
++        var university = await _universityService.GetById(id);
++        
++        return View(university);
++    }
++    
++    public IActionResult Create()
++    {
++        return View();
++    }
++    
++    [HttpPost]
++    public async Task<IActionResult> Create(University university)
++    {
++        await _universityService.Add(university);
++        
++        return RedirectToAction(nameof(Index));
++    }
++    
++    public async Task<IActionResult> Edit(int id)
++    {
++        var university = await _universityService.GetById(id);
++        
++        return View(university);
++    }
++    
++    [HttpPost]
++    public async Task<IActionResult> Edit(University university)
++    {
++        await _universityService.Update(university);
++        
++        return RedirectToAction(nameof(Index));
++    }
++    
++    public async Task<IActionResult> Delete(int id)
++    {
++        var university = await _universityService.GetById(id);
++        
++        return View(university);
++    }
++}
+\ No newline at end of file
+Index: LabolatoriumASP.NET/Services/UniversityService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Services/UniversityService.cs b/LabolatoriumASP.NET/Services/UniversityService.cs
+new file mode 100644
+--- /dev/null	
++++ b/LabolatoriumASP.NET/Services/UniversityService.cs	
+@@ -0,0 +1,58 @@
++using LabolatoriumASP.NET.Models;
++using LabolatoriumASP.NET.Services.IService;
++using Microsoft.AspNetCore.Mvc;
++using Microsoft.EntityFrameworkCore;
++
++namespace LabolatoriumASP.NET.Services;
++
++public class UniversityService : IUniversityService
++{
++    private readonly AppDbContext _context;
++
++    public UniversityService(AppDbContext context)
++    {
++        _context = context;
++    }
++    
++    public async Task<IEnumerable<University>> GetAll()
++    {
++        return await _context.Universities
++            .Include(c => c.Country)
++            .ToListAsync();
++    }
++    
++    public async Task<University> GetById(int id)
++    {
++        return await _context.Universities
++            .Include(c => c.Country)
++            .FirstOrDefaultAsync(u => u.Id == id) ?? throw new InvalidOperationException();
++    }
++    
++    public async Task<University> Add(University university)
++    {
++        _context.Universities.Add(university);
++        await _context.SaveChangesAsync();
++        
++        return university;
++    }
++    
++    public async Task<University> Update(University university)
++    {
++        _context.Universities.Update(university);
++        await _context.SaveChangesAsync();
++        
++        return university;
++    }
++    
++    public async Task<University> Delete(int id)
++    {
++        var university = await _context.Universities.FirstOrDefaultAsync(u => u.Id == id) ?? throw new InvalidOperationException();
++        
++        _context.Universities.Remove(university);
++        await _context.SaveChangesAsync();
++        
++        return university;
++    }
++    
++    
++}
+\ No newline at end of file
+Index: LabolatoriumASP.NET/appsettings.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"Logging\": {\r\n    \"LogLevel\": {\r\n      \"Default\": \"Information\",\r\n      \"Microsoft.AspNetCore\": \"Warning\"\r\n    }\r\n  },\r\n  \"AllowedHosts\": \"*\"\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/appsettings.json b/LabolatoriumASP.NET/appsettings.json
+--- a/LabolatoriumASP.NET/appsettings.json	
++++ b/LabolatoriumASP.NET/appsettings.json	
+@@ -5,5 +5,8 @@
+       "Microsoft.AspNetCore": "Warning"
+     }
+   },
+-  "AllowedHosts": "*"
++  "AllowedHosts": "*",
++  "ConnectionStrings": {
++    "DefaultConnection": "Data source=c:\\data\\university.db"
++  }
+ }
+Index: LabolatoriumASP.NET/LabolatoriumASP.NET.csproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Project Sdk=\"Microsoft.NET.Sdk.Web\">\r\n\r\n    <PropertyGroup>\r\n        <TargetFramework>net8.0</TargetFramework>\r\n        <Nullable>enable</Nullable>\r\n        <ImplicitUsings>enable</ImplicitUsings>\r\n    </PropertyGroup>\r\n\r\n</Project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/LabolatoriumASP.NET.csproj b/LabolatoriumASP.NET/LabolatoriumASP.NET.csproj
+--- a/LabolatoriumASP.NET/LabolatoriumASP.NET.csproj	
++++ b/LabolatoriumASP.NET/LabolatoriumASP.NET.csproj	
+@@ -6,4 +6,21 @@
+         <ImplicitUsings>enable</ImplicitUsings>
+     </PropertyGroup>
+ 
++    <ItemGroup>
++      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
++      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
++        <PrivateAssets>all</PrivateAssets>
++        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
++      </PackageReference>
++      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
++      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
++        <PrivateAssets>all</PrivateAssets>
++        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
++      </PackageReference>
++    </ItemGroup>
++
++    <ItemGroup>
++      <_ContentIncludedByDefault Remove="Pages\University\Index.cshtml" />
++    </ItemGroup>
++
+ </Project>
+Index: LabolatoriumASP.NET/Services/IService/IUniversityService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LabolatoriumASP.NET/Services/IService/IUniversityService.cs b/LabolatoriumASP.NET/Services/IService/IUniversityService.cs
+new file mode 100644
+--- /dev/null	
++++ b/LabolatoriumASP.NET/Services/IService/IUniversityService.cs	
+@@ -0,0 +1,12 @@
++using LabolatoriumASP.NET.Models;
++
++namespace LabolatoriumASP.NET.Services.IService;
++
++public interface IUniversityService
++{
++    Task<IEnumerable<University>> GetAll();
++    Task<University> GetById(int id);
++    Task<University> Add(University university);
++    Task<University> Update(University university);
++    Task<University> Delete(int id);
++}
+\ No newline at end of file
